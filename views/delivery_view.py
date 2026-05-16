@@ -7,7 +7,8 @@ import plotly.express as px
 from db.delivery_queries import (
     get_delivery_over_time,
     get_most_delayed_routes,
-    get_delivery_time_vs_distance
+    get_delivery_time_vs_distance,
+    get_route_delivery_efficiency
 )
 
 
@@ -22,6 +23,19 @@ def render_delivery_view():
                           title="Monthly Shipment Status Trend",
                           labels={"value": "Shipments", "variable": "Status"})
             st.plotly_chart(fig, use_container_width=True)
+
+        st.markdown("### Delivery Efficiency by Route")
+        efficiency = get_route_delivery_efficiency()
+        if not efficiency.empty:
+            efficiency["route"] = efficiency["origin"] + " → " + efficiency["destination"]
+            fig_eff = px.bar(efficiency, x="route",
+                             y=["delivered", "cancelled"],
+                             barmode="group",
+                             title="Delivered vs Cancelled per Route (Top 20 by Volume)",
+                             labels={"value": "Shipments", "variable": "Status", "route": "Route"},
+                             color_discrete_map={"delivered": "green", "cancelled": "red"})
+            fig_eff.update_layout(xaxis_tickangle=-45)
+            st.plotly_chart(fig_eff, use_container_width=True)
 
         st.markdown("### Most Delayed Routes")
         delayed = get_most_delayed_routes()

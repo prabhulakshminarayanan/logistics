@@ -40,6 +40,24 @@ def get_most_delayed_routes():
     return run_query(sql)
 
 
+def get_route_delivery_efficiency():
+    """Return delivery efficiency (% delivered vs cancelled) per route — top 20 by shipment volume."""
+    sql = """
+        SELECT
+            s.origin, s.destination,
+            COUNT(*) AS total_shipments,
+            COUNT(CASE WHEN ss.status_name = 'Delivered' THEN 1 END) AS delivered,
+            COUNT(CASE WHEN ss.status_name = 'Cancelled' THEN 1 END) AS cancelled,
+            ROUND(COUNT(CASE WHEN ss.status_name = 'Delivered' THEN 1 END) * 100.0 / COUNT(*), 2) AS delivery_rate
+        FROM shipments s
+        JOIN shipment_statuses ss ON s.status_id = ss.status_id
+        GROUP BY s.origin, s.destination
+        ORDER BY total_shipments DESC
+        LIMIT 20
+    """
+    return run_query(sql)
+
+
 def get_delivery_time_vs_distance():
     """Return average delivery time grouped by route distance for scatter plot."""
     sql = """
