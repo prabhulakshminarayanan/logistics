@@ -1,0 +1,14 @@
+# Claude Code
+.claude/
+
+# Virtual environment
+venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+
+# Environment variables (secrets)
+.env
