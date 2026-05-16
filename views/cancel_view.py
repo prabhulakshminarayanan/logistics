@@ -36,12 +36,21 @@ def render_cancel_view():
         st.markdown("### Time-to-Cancellation Pattern")
         ttc = get_time_to_cancellation()
         if not ttc.empty:
-            ttc_grouped = ttc.groupby("days_to_cancel").size().reset_index(name="shipment_count")
+            # Remove outliers — keep only shipments cancelled within 30 days
+            # (1 shipment took 299 days which stretches the chart unusably)
+            outliers = ttc[ttc["days_to_cancel"] > 30]
+            ttc_clean = ttc[ttc["days_to_cancel"] <= 30]
+
+            ttc_grouped = ttc_clean.groupby("days_to_cancel").size().reset_index(name="shipment_count")
             fig3 = px.bar(ttc_grouped, x="days_to_cancel", y="shipment_count",
                           title="How Many Days After Order Placement Do Cancellations Happen?",
                           labels={"days_to_cancel": "Days to Cancel",
                                   "shipment_count": "Number of Shipments"})
             st.plotly_chart(fig3, use_container_width=True)
+
+            # Show outlier note so data is transparent
+            if not outliers.empty:
+                st.caption(f"ℹ️ {len(outliers)} shipment(s) with cancellation beyond 30 days excluded from chart for readability (max: {int(outliers['days_to_cancel'].max())} days).")
 
     except Exception as e:
         st.error(f"Error loading cancellation data: {e}")
