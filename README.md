@@ -151,7 +151,13 @@ Then open **http://localhost:8501** in your browser.
 ## 📁 Dataset
 
 The dataset contains 6 files with 70,000+ logistics records.  
-Download from: [Google Drive — Logistics Dataset](https://drive.google.com/drive/folders/1quR-EsaUUel_AAg6zKMHMvDUs8yX6PYU?usp=sharing)
+Place the following files inside the `data/` folder before running the project:
+- `shipments.json`
+- `shipment_tracking.csv`
+- `courier_staff.csv`
+- `routes.csv`
+- `warehouses.json`
+- `costs.csv`
 
 ---
 
