@@ -14,7 +14,6 @@ def render_warehouse_view():
         warehouses = get_warehouse_capacity()
         if not warehouses.empty:
             fig = px.bar(warehouses, x="city", y="capacity",
-                         color="state",
                          title="Warehouse Capacity by City",
                          labels={"capacity": "Capacity", "city": "City"})
             fig.update_layout(xaxis_tickangle=-45)
@@ -30,7 +29,6 @@ def render_warehouse_view():
         traffic = get_high_traffic_warehouses()
         if not traffic.empty:
             fig3 = px.bar(traffic, x="city", y="shipment_traffic",
-                          color="state",
                           title="Warehouse Cities by Shipment Traffic",
                           labels={"shipment_traffic": "Shipment Traffic", "city": "City"})
             fig3.update_layout(xaxis_tickangle=-45)
